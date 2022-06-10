@@ -1,6 +1,7 @@
 package com.example.universityapp.controller;
 
 import com.example.universityapp.dto.CourseExamResultDTO;
+import com.example.universityapp.dto.UserAvgDTO;
 import com.example.universityapp.entity.Course;
 import com.example.universityapp.entity.Exams;
 import com.example.universityapp.entity.User;
@@ -35,7 +36,7 @@ public class CourseUserController {
         this.courseRepository = courseRepository;
         this.examsRepository = examsRepository;
     }
-
+/*
     @ApiOperation(value = "Verilen dersi alan kullanıcıların not ortalamasını ve notun harf değerini döndürür")
     @GetMapping("/avarageGrade/{courseId}")
     ResponseEntity<List<CourseExamResultDTO>> getAvarageGrade(@PathVariable Long courseId) {
@@ -57,5 +58,11 @@ public class CourseUserController {
             resultDTOS.add(new CourseExamResultDTO(user.getFirstname() + user.getLastname(), sum/user.getCourses().size(), getScoreLetter(sum/user.getCourses().size())));
         }
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+    }
+ */
+    @ApiOperation(value = "Verilen dersi alan kullanıcıların not ortalamasını ve notun harf değerini döndürür")
+    @GetMapping("/avarageGrade/{courseId}")
+    ResponseEntity<List<UserAvgDTO>> getAvarageGrade(@PathVariable Long courseId) {
+        return ResponseEntity.ok(userRepository.countAverageExamScoreByCourses(courseId));
     }
 }
