@@ -14,4 +14,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query( name="getUserAvgByCourseId",
             nativeQuery = true)
     List<UserAvgDTO> countAverageExamScoreByCourses(@Param("id") Long courseId);
+
+    @Query( name="getGreaterThen",
+            nativeQuery = true)
+    List<UserAvgDTO> getUsersGreaterThenScore(@Param("score") Integer score);
 }

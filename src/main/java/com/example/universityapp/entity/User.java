@@ -12,7 +12,23 @@ import java.util.List;
 @NamedNativeQueries({
         @NamedNativeQuery(
                 name = "getUserAvgByCourseId",
-                query = "select concat(firstname, ' ', lastname) as name, avg(avarage) as avg from\n" +
+                query = "select concat(firstname, ' ', lastname) as name, round(sum(avarage*credit)/sum(credit),2) as avg from\n" +
+                        "    (\n" +
+                        "        select userid , users.firstname, users.lastname, course.course_name, credit, sum(IfNULL(score,0))/3 as avarage\n" +
+                        "        from users\n" +
+                        "                 right join usercourses on users.id = usercourses.userid\n" +
+                        "                 left join course on usercourses.courseid = course.id\n" +
+                        "                 left join exams on usercourses.courseid = exams.course_id\n" +
+                        "            and usercourses.userid = exams.user_id\n" +
+                        "        where users.id in (select userid from usercourses where courseid = :id)\n" +
+                        "        group by course_id\n" +
+                        "    )\n" +
+                        "group by userid;",
+                resultSetMapping = "avgByCourseID"
+        ),
+        @NamedNativeQuery(
+                name = "getGreaterThen",
+                query = "select concat(firstname, ' ', lastname) as name, round(avg(avarage),2) as avg from\n" +
                         "    (\n" +
                         "        select userid , users.firstname, users.lastname, course.course_name, avg(score) as avarage\n" +
                         "        from users\n" +
@@ -20,19 +36,27 @@ import java.util.List;
                         "                 join course on usercourses.courseid = course.id\n" +
                         "                 join exams on usercourses.courseid = exams.course_id\n" +
                         "            and usercourses.userid = exams.user_id\n" +
-                        "        where users.id in (select userid from usercourses where courseid = :id)\n" +
                         "        group by course_id\n" +
                         "    )\n" +
-                        "group by userid;",
-                resultSetMapping = "avgByCourseID"
+                        "group by userid" +
+                        "having round(avg(avarage),2) > :score;",
+                resultSetMapping = "greaterThan"
         )
 })
-@SqlResultSetMapping(name = "avgByCourseID",
-        classes = @ConstructorResult(targetClass = UserAvgDTO.class,
-                columns = {
-                        @ColumnResult(name = "name", type = String.class),
-                        @ColumnResult(name = "avg", type = Double.class)
-                }))
+@SqlResultSetMappings({
+        @SqlResultSetMapping(name = "avgByCourseID",
+                classes = @ConstructorResult(targetClass = UserAvgDTO.class,
+                        columns = {
+                                @ColumnResult(name = "name", type = String.class),
+                                @ColumnResult(name = "avg", type = Double.class)
+                        })),
+        @SqlResultSetMapping(name = "greaterThan",
+                classes = @ConstructorResult(targetClass = UserAvgDTO.class,
+                        columns = {
+                                @ColumnResult(name = "name", type = String.class),
+                                @ColumnResult(name = "avg", type = Double.class)
+                        }))}
+)
 @Getter
 @Setter
 @Entity
