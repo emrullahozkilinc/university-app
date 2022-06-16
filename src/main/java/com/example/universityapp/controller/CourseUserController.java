@@ -38,7 +38,7 @@ public class CourseUserController {
 
     @ApiOperation(value = "100 üzerinden belli bir not ortalamasının üzerindeki öğrencileri döndürür.")
     @GetMapping("/greaterThan/{score}")
-    ResponseEntity<List<UserAvgDTO>> getGreaterThen(@PathVariable Integer score) {
+    ResponseEntity<List<UserAvgDTO>> getGreaterThen(@PathVariable("score") Integer score) {
         List<UserAvgDTO> res = userRepository.getUsersGreaterThenScore(score);
         if(res.isEmpty())
             return null;

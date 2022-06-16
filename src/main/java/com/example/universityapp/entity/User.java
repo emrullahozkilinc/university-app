@@ -28,19 +28,19 @@ import java.util.List;
         ),
         @NamedNativeQuery(
                 name = "getGreaterThen",
-                query = "select concat(firstname, ' ', lastname) as name, round(avg(avarage),2) as avg from\n" +
+                query = "select concat(firstname, ' ', lastname) as name, round(sum(avarage*credit)/sum(credit),2) as avg from\n" +
                         "    (\n" +
-                        "        select userid , users.firstname, users.lastname, course.course_name, avg(score) as avarage\n" +
+                        "        select userid , users.firstname, users.lastname, course.course_name, credit, sum(IfNULL(score,0))/3 as avarage\n" +
                         "        from users\n" +
-                        "                 join usercourses on users.id = usercourses.userid\n" +
-                        "                 join course on usercourses.courseid = course.id\n" +
-                        "                 join exams on usercourses.courseid = exams.course_id\n" +
+                        "                 right join usercourses on users.id = usercourses.userid\n" +
+                        "                 left join course on usercourses.courseid = course.id\n" +
+                        "                 left join exams on usercourses.courseid = exams.course_id\n" +
                         "            and usercourses.userid = exams.user_id\n" +
                         "        group by course_id\n" +
                         "    )\n" +
-                        "group by userid" +
-                        "having round(avg(avarage),2) > :score;",
-                resultSetMapping = "greaterThan"
+                        "group by userid\n" +
+                        "having avg > :score",
+                resultSetMapping = "avgByCourseID"
         )
 })
 @SqlResultSetMappings({
