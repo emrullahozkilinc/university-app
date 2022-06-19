@@ -2,8 +2,7 @@ package com.example.universityapp.entity;
 
 import com.example.universityapp.dto.UserAvgDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -80,6 +79,8 @@ public class User {
             joinColumns = @JoinColumn(name = "userid"),
             inverseJoinColumns = @JoinColumn(name = "courseid"))
     List<Course> courses;
+
+
 
     public void addCourse(Course course){
         if(courses == null)
