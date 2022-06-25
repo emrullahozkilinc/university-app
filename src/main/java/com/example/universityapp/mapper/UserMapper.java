@@ -1,21 +1,22 @@
 package com.example.universityapp.mapper;
 
-import com.example.universityapp.entity.User;
+import com.example.universityapp.pojo.UserCourseScore;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserMapper implements RowMapper<User> {
+public class UserMapper implements RowMapper<UserCourseScore> {
 
 
     @Override
-    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public UserCourseScore mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-        User user = new User();
-        user.setId(rs.getLong("id"));
-        user.setFirstname(rs.getString("firstname"));
-        user.setLastname(rs.getString("lastname"));
+        UserCourseScore user = new UserCourseScore(
+                rs.getLong("user_id"),
+                rs.getLong("course_id"),
+                rs.getDouble("score")
+        );
 
         return user;
     }

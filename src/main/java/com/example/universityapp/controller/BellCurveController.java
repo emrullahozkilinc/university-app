@@ -1,13 +1,10 @@
 package com.example.universityapp.controller;
 
-import com.example.universityapp.entity.Course;
-import com.example.universityapp.entity.User;
+import com.example.universityapp.dao.ExamsDao;
 import com.example.universityapp.pojo.UserCourseScore;
-import com.example.universityapp.repo.CourseRepository;
-import com.example.universityapp.repo.ExamsRepository;
-import com.example.universityapp.repo.UserRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,23 +19,16 @@ import java.util.List;
 @RequestMapping("/bellcurve")
 public class BellCurveController {
 
-    CourseRepository courseRepository;
-    UserRepository userRepository;
-    ExamsRepository examsRepository;
+    ExamsDao examsDao;
 
-    public BellCurveController(CourseRepository courseRepository, UserRepository userRepository, ExamsRepository examsRepository) {
-        this.courseRepository = courseRepository;
-        this.userRepository = userRepository;
-        this.examsRepository = examsRepository;
+    @Autowired
+    public BellCurveController(ExamsDao examsDao) {
+        this.examsDao = examsDao;
     }
 
     @ApiOperation(value = "Çan eğrisi hesaplama işlemi")
     @GetMapping("/getUserScore/{courseId}")
-    ResponseEntity<UserCourseScore> getUsersScoreWithBellCurve(@PathVariable Long courseId) {
-        Course course = courseRepository.findById(courseId).get();
-        List<User> users = course.getUsers();
-
-        return new ResponseEntity<>(examsRepository.findExamsAvgScore(), HttpStatus.OK);
-
+    ResponseEntity<List<UserCourseScore>> getUsersScoreWithBellCurve(@PathVariable Long courseId) {
+        return new ResponseEntity<>(examsDao.getUserCourseScores(courseId), HttpStatus.OK);
     }
 }

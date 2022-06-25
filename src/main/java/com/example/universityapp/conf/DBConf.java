@@ -1,10 +1,8 @@
 package com.example.universityapp.conf;
 
-import org.hibernate.cfg.Environment;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
@@ -15,18 +13,18 @@ public class DBConf {
 
     @Bean
     DataSource dataSource() {
-        DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
         String URL = "jdbc:h2:file:/data/sample";
-        driverManagerDataSource.setUrl(URL);
+        dataSource.setUrl(URL);
         String USER = "user";
-        driverManagerDataSource.setUsername(USER);
+        dataSource.setUsername(USER);
         String PASSWORD = "pass";
-        driverManagerDataSource.setPassword(PASSWORD);
+        dataSource.setPassword(PASSWORD);
         String DRIVER = "org.h2.Driver";
-        driverManagerDataSource.setDriverClassName(DRIVER);
+        dataSource.setDriverClassName(DRIVER);
 
 
-        return driverManagerDataSource;
+        return dataSource;
     }
 }
