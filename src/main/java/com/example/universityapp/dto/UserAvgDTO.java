@@ -9,9 +9,4 @@ public class UserAvgDTO {
     String name;
     double avg;
     String scoreLetter;
-
-    public UserAvgDTO(String name, double avg) {
-        this.name = name;
-        this.avg = avg;
-    }
 }

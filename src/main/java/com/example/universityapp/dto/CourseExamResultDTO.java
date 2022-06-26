@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class CourseExamResultDTO {
-    String userName;
-    int avgScore;
+    Long userId;
+    double avgScore;
     String scoreLetter;
 }

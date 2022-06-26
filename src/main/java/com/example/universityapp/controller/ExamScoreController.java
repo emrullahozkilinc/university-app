@@ -5,6 +5,7 @@ import com.example.universityapp.entity.Course;
 import com.example.universityapp.entity.Exams;
 import com.example.universityapp.repo.ExamsRepository;
 import com.example.universityapp.repo.UserRepository;
+import com.example.universityapp.service.ScoreCalculator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
@@ -24,10 +25,12 @@ public class ExamScoreController {
 
     ExamsRepository examsRepository;
     UserRepository userRepository;
+    ScoreCalculator scoreCalculator;
 
-    public ExamScoreController(ExamsRepository examsRepository, UserRepository userRepository) {
+    public ExamScoreController(ExamsRepository examsRepository, UserRepository userRepository, ScoreCalculator scoreCalculator) {
         this.examsRepository = examsRepository;
         this.userRepository = userRepository;
+        this.scoreCalculator = scoreCalculator;
     }
 
     @ApiOperation(value = "Öğrencilerin aldığı derslerin not ortalaması")
@@ -42,7 +45,7 @@ public class ExamScoreController {
             int sum = 0;
             if(!exams.isEmpty())
                 sum = exams.stream().mapToInt(Exams::getScore).sum();
-            courseDtos.add(new CourseDto(course.getCourseName(), sum / 3, getScoreLetter(sum / 3)));
+            courseDtos.add(new CourseDto(course.getCourseName(), sum / 3, scoreCalculator.getScoreLetter(sum / 3)));
         }
 
         return ResponseEntity.ok(courseDtos);
@@ -63,54 +66,9 @@ public class ExamScoreController {
             if(!exams.isEmpty())
                 mean = exams.stream().mapToInt(Exams::getScore).sum() / 3;
             sumCredits += course.getCredit();
-            sumScore += getScoreGPA(mean) * course.getCredit();
+            sumScore += scoreCalculator.getScoreGPA(mean) * course.getCredit();
 
         }
         return ResponseEntity.ok(sumScore / sumCredits);
     }
-
-    static String getScoreLetter(int score) {
-        if(score >= 90)
-            return "AA";
-        else if(score >= 85)
-            return "BA";
-        else if(score >= 80)
-            return "BB";
-        else if(score >= 70)
-            return "CB";
-        else if(score >= 60)
-            return "CC";
-        else if(score >= 55)
-            return "DC";
-        else if(score >= 50)
-            return "DD";
-        else if(score >= 40)
-            return "FD";
-        else
-            return "FF";
-
-    }
-
-    static double getScoreGPA(int score) {
-        if(score >= 90)
-            return 4.0;
-        else if(score >= 85)
-            return 3.5;
-        else if(score >= 80)
-            return 3.0;
-        else if(score >= 70)
-            return 2.5;
-        else if(score >= 60)
-            return 2.0;
-        else if(score >= 55)
-            return 1.5;
-        else if(score >= 50)
-            return 1.0;
-        else if(score >= 40)
-            return 0.5;
-        else
-            return 0.0;
-
-    }
-
 }

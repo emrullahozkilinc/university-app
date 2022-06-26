@@ -20,8 +20,8 @@ public class ExamsDao {
     public List<UserCourseScore> getUserCourseScores(long courseId) {
         String sql = "select user_id, course_id, sum(IfNULL(score,0))/3 as score\n" +
                 "from exams\n" +
-                "group by course_id\n" +
-                "having course_id = ?;";
+                "where course_id = ?\n" +
+                "group by user_id;";
         List<UserCourseScore> userCourseScores = jdbcTemplate.query(sql, new UserMapper(), courseId);
         return userCourseScores;
     }
