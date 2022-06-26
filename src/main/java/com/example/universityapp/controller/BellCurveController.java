@@ -7,6 +7,7 @@ import com.example.universityapp.service.ScoreCalculator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,17 +37,19 @@ public class BellCurveController {
 
         List<UserCourseScore> userCourseScores = examsDao.getUserCourseScores(courseId);
         List<CourseExamResultDTO> resultDTOS;
+        System.out.println(userCourseScores.size());
+
 
         userCourseScores.sort(Comparator.comparing(UserCourseScore::getScore));
         if(userCourseScores.size() > 0) {
             double score = userCourseScores.get(userCourseScores.size()/2).getScore();
-            if (score<60 && score>20) {
+            if (score<60 && score>20)
                 resultDTOS = scoreCalculator.calcBellCurve(userCourseScores, score);
-            } else
+            else
                 return ResponseEntity.noContent().build();
         } else
             return ResponseEntity.noContent().build();
 
-        return ResponseEntity.ok(resultDTOS);
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
     }
 }

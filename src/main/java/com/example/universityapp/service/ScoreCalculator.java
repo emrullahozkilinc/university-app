@@ -76,7 +76,9 @@ public class ScoreCalculator {
         };
 
         return userCourseScores.stream()
-                .map(userCourseScore -> new CourseExamResultDTO(userCourseScore.getUserId(), userCourseScore.getScore(), calc.getScoreLetter(userCourseScore.getScore())))
+                .map(userCourseScore -> new CourseExamResultDTO(userCourseScore.getUserId(),
+                        userCourseScore.getScore(),
+                        calc.getScoreLetter(100 - userCourseScore.getScore())))
                 .collect(java.util.stream.Collectors.toList());
     }
 
